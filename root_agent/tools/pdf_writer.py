@@ -18,11 +18,10 @@ def create_study_notes_pdf(filename: str, title: str, content: str) -> str:
     Returns:
         A success message with the file path.
     """
-    print(f"\n--- 📄 [Tool Call]: Generating PDF '{filename}'... ---")
+    print(f"\n--- 📄 Generating PDF '{filename}'... ---")
     
     try:
         # 1. Convert Markdown to HTML
-        # FPDF handles HTML much better than raw Markdown for things like bold/bullets
         html_content = markdown.markdown(content)
         
         # 2. Initialize PDF
@@ -30,12 +29,11 @@ def create_study_notes_pdf(filename: str, title: str, content: str) -> str:
         pdf.add_page()
         
         # 3. Add Title (Styled)
-        pdf.set_font("Helvetica", "B", 20)
+        pdf.set_font("Helvetica", "", 16)
         pdf.cell(0, 15, title, new_x="LMARGIN", new_y="NEXT", align='C')
         pdf.ln(5)
         
         # 4. Write HTML Content
-        # This renders <b>, <h1>, <ul> automatically from the markdown conversion
         pdf.write_html(html_content)
         
         # 5. Save File

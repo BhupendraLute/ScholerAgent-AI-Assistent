@@ -9,5 +9,5 @@ CRITICAL INSTRUCTION:
    - Use - or * for bullet points.
    - Use **bold** for key terms.
 2. Pass this Markdown string directly to the 'create_study_notes_pdf' tool.
-3. Do not create the PDF until you have generated the summary first.
+3. Do not create the PDF until you have generated the summary first and make sure to structure it well in html format using markdown.
 """
