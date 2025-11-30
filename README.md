@@ -1,56 +1,72 @@
-# ScholarAgent
+# 🎓 ScholarAgent: The AI Exam Concierge
 
-A local-first study assistant that helps engineering students organize material, learn faster, and generate polished study notes. It runs in your terminal and uses a coordinated team of AI agents that read your own syllabus and notes, quiz you, and create formatted PDFs.
+![Status](https://img.shields.io/badge/Status-Capstone_Submission-success)
+![Track](https://img.shields.io/badge/Track-Concierge_Agents-blue)
+![Tech](https://img.shields.io/badge/Powered_by-Google_Gemini-orange)
 
----
-
-## Overview
-
-Many students spend a large part of their study time searching for files, jumping between PDFs, and figuring out what to review next. Generic language models can help, but they often guess details that aren’t in your actual coursework.
-
-ScholarAgent solves that by working only with your local files. It reads your syllabus and notes, explains concepts using that material, quizzes you on the exact topics you should know, and creates clean PDF study guides.
+> **A Multi-Agent System designed to help engineering students organize, study, and master their local course material.**
 
 ---
 
-## Architecture
+## 1. 💡 The Pitch
 
-ScholarAgent uses a modular multi-agent setup following the Router Pattern. The system includes one router and three specialists.
+### The Problem
+Engineering students (myself included) often spend 30% of their study time just "managing context", organizing PDFs, searching through syllabus files, and figuring out *what* to study, rather than actually learning. Generic LLMs are helpful, but they hallucinate curriculum details because they lack access to our specific local course files.
 
-### Orchestrator  
-Routes user requests to the right specialist. It classifies the intent as research, quizzing, or notes generation.
-
-### Researcher  
-Explains material, summaries topics, and answers academic questions. It uses a file-reading tool to stay grounded in your local syllabus and notes.
-
-### QuizMaster  
-Creates challenging questions and evaluates answers. It uses the same course material for accuracy and relevance.
-
-### NotesTaker  
-Builds PDF study guides from your conversation history. It uses a PDF-writing tool to save formatted files to your drive.
+### The Solution
+**ScholarAgent** is a proactive academic concierge that lives in your terminal. It doesn't just answer questions; it orchestrates a specialized team of AI agents to:
+1.  **Read** your specific local syllabus and notes.
+2.  **Teach** you concepts based *only* on that material.
+3.  **Quiz** you strictly to ensure mastery.
+4.  **Create** formatted PDF study guides automatically.
 
 ---
 
-## Key Features
+## 2. 🏗️ Technical Architecture
 
-### Multi-Agent System  
-A central router delegates tasks to the Researcher, QuizMaster, and NotesTaker.
+ScholarAgent implements the **Router Pattern** using a modular multi-agent architecture. It uses the **Google Agent Development Kit (ADK)** methodology to coordinate specialized personas.
 
-### Custom Tools  
-Two custom tools extend capabilities into the local filesystem:
-- A file reader for loading your syllabus and notes.
-- A PDF writer for generating study guides.
+### The Agent Team
+The system consists of one Orchestrator and three Specialist Agents:
 
-### Session Memory  
-The session layer keeps conversation context. NotesTaker uses this to assemble accurate summaries.
+1.  **🎩 The Orchestrator (Router):**
+    * **Role:** The Manager.
+    * **Logic:** Analyzes user input and classifies intent into `RESEARCH`, `QUIZ`, or `NOTES`. It routes the task to the correct specialist.
+    * **Model:** `gemini-2.5-flash`.
 
-### Strict Context Separation  
-Each agent follows its own set of system rules. This keeps explanations friendly, quizzes strict, and notes consistent.
+2.  **🎓 The Researcher (RAG Specialist):**
+    * **Role:** The Tutor.
+    * **Capability:** Explains concepts and summarizes topics.
+    * **Tool:** `file_reader` (Reads local text/syllabus files to ground answers).
+
+3.  **📝 The QuizMaster (Evaluator):**
+    * **Role:** The Exam Proctor.
+    * **Capability:** Generates hard questions and grades answers as Pass/Fail.
+    * **Context:** Uses the syllabus to ensure questions are relevant to the actual exam.
+
+4.  **📄 The NotesTaker (Creator):**
+    * **Role:** The Scribe.
+    * **Capability:** Compiles conversation history and generates physical files.
+    * **Tool:** `pdf_writer` (Converts Markdown summaries into formatted PDF files).
 
 ---
 
-## Project Structure
+## 3. 🎯 Key Features
 
-```
+This project demonstrates **4 Key Concepts** from the AI Agents Intensive:
+
+| Feature | Implementation Details |
+| :--- | :--- |
+| **1. Multi-Agent System** | Implemented a hierarchical team where a central Orchestrator delegates tasks to `Researcher`, `QuizMaster`, and `NotesTaker` based on intent classification. |
+| **2. Custom Tools (MCP)** | Created two custom Python tools: <br>• `read_text_file`: Allows agents to ingest local data.<br>• `create_study_notes_pdf`: Allows agents to generate files on the OS. |
+| **3. Sessions & Memory** | utilized `InMemorySessionService` to maintain conversation context. The `NotesTaker` agent uses this memory to recall what was discussed earlier to generate summaries. |
+| **4. Context Engineering** | Used distinct `System Instructions` for each agent to enforce strict separation of concerns (e.g., The QuizMaster is "strict," the Researcher is "helpful"). |
+
+---
+
+## 4. 📂 Project Structure
+
+```text
 ScholarAgent/
 ├── root_agent/
 │   ├── agent.py
@@ -77,62 +93,59 @@ ScholarAgent/
 
 ---
 
-## Setup
+## 5. 🚀 Setup & Run Instructions
 
 ### Requirements
 - Python 3.10 or newer  
 - A Google Cloud / AI Studio API key
 
 ### Install
-
 ```
-git clone <YOUR_REPO_URL>
-cd ScholarAgent
+git clone https://github.com/BhupendraLute/ScholerAgent-AI-Assistent.git
+
+cd ScholarAgent-AI-Assistent
 
 python -m venv venv
-source venv/bin/activate   # Windows: .env\Scriptsctivate
+source venv/bin/activate   # Windows: .env\Scripts\Activate
 
 pip install -r requirements.txt
 ```
 
 ### Configure Keys
-
 Create a `.env` file in the project root:
-
 ```
 GOOGLE_API_KEY="your_api_key_here"
 ```
 
 ### Run
-
 ```
 python main.py
 ```
-
 ---
 
-## How to Use
+## 6. 🧪 Example Usage Scenarios
 
 ### Research
 ```
 User: Summarize the syllabus.txt file.
+
+Agent: (Reads file) "The syllabus covers OpenGL, 3D Projections, and Shaders..."
 ```
 
 ### Quiz
 ```
 User: Give me a hard quiz based on that summary.
+
+Agent: (Routes to QuizMaster) "Here are 3 questions about OpenGL..."
 ```
 
 ### Notes
 ```
 User: Create a PDF summary of everything we discussed.
+
+Agent: (Routes to NotesTaker) "I have compiled the notes. File saved to downloads/summary.pdf."
 ```
 
-The PDF will be saved in `downloads/`.
-
----
-
-## Demo
-
+The PDF will be saved in `downloads/` in current working directory.
 ---
 Built for the Google AI Agents Intensive Capstone 2025.
